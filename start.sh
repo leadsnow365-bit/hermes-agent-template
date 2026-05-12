@@ -16,4 +16,9 @@ fi
 
 [ ! -f /data/.hermes/.env ] && touch /data/.hermes/.env
 
+# Start Angel MCP task server in background (port 8081) only if configured
+if [ -n "$AGENT_NAME" ]; then
+    python /app/mcp_task_server.py &
+fi
+
 exec python /app/server.py
