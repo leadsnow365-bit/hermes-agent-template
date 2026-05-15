@@ -28,8 +28,8 @@ RUN git clone --depth 1 https://github.com/impacte-tech/hermes-agent /opt/hermes
     rm -rf /opt/hermes-agent/web /opt/hermes-agent/.git /root/.npm
 
 # ---- Install Playwright browsers AFTER Hermes is installed ----
-RUN playwright install chromium && \
-    playwright install-deps chromium
+RUN python -m playwright install chromium && \
+    python -m playwright install-deps chromium
 
 COPY requirements.txt /app/requirements.txt
 RUN uv pip install --system --no-cache -r /app/requirements.txt
