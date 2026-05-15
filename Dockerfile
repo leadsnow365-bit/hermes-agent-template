@@ -8,6 +8,21 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
 
+# ---- Chrome/Playwright dependencies for vision analysis ----
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libglib2.0-0 libnss3 libfontconfig1 libxss1 \
+    libasound2 libxtst6 libgtk-3-0 libgbm-dev \
+    libdrm2 libxcomposite1 libxdamage1 libxrandr2 \
+    libxkbcommon0 libpango-1.0-0 libcairo2 libatspi2.0-0 \
+    fonts-liberation && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Playwright browsers (Chromium is enough for vision)
+RUN playwright install chromium && \
+    playwright install-deps chromium
+# ---- End vision dependencies ----
+
 # Install hermes-agent (provides the `hermes` CLI) and pre-build its React
 # dashboard so `hermes dashboard` has nothing to build at runtime.
 # Deleting web/ afterwards makes hermes's internal _build_web_ui skip the
