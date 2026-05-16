@@ -1,0 +1,13 @@
+model:
+  provider: "kimi-coding"
+  name: "kimi-k2.6"
+
+auxiliary:
+  vision:
+    provider: "custom"
+    model: "gpt-4o-mini"
+    base_url: "https://api.openai.com/v1"
+    api_key: "${OPENAI_API_KEY}"
+    timeout: 120
+    extra_body: {}
+    download_timeout: 30
