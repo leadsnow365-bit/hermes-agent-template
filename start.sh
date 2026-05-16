@@ -1,10 +1,7 @@
 #!/bin/bash
 set -e
 
-mkdir -p /data/.hermes/cron /data/.hermes/sessions /data/.hermes/logs \
-         /data/.hermes/memories /data/.hermes/skills /data/.hermes/pairing \
-         /data/.hermes/hooks /data/.hermes/image_cache /data/.hermes/audio_cache \
-         /data/.hermes/workspace
+mkdir -p /data/.hermes/{cron,sessions,logs,memories,skills,pairing,hooks,image_cache,audio_cache,workspace}
 
 cat > /data/.hermes/config.yaml << 'EOF'
 model:
