@@ -35,11 +35,12 @@ RUN python -m playwright install chromium && \
 COPY requirements.txt /app/requirements.txt
 RUN uv pip install --system --no-cache -r /app/requirements.txt
 
-RUN mkdir -p /data/.hermes
+RUN
 
 COPY server.py /app/server.py
 COPY templates/ /app/templates/
 COPY start.sh /app/start.sh
+COPY config.yaml /app/config.yaml
 COPY mcp_task_server.py /app/mcp_task_server.py
 RUN chmod +x /app/start.sh
 
