@@ -40,7 +40,6 @@ RUN
 COPY server.py /app/server.py
 COPY templates/ /app/templates/
 COPY start.sh /app/start.sh
-COPY config.yaml /app/config.yaml
 COPY mcp_task_server.py /app/mcp_task_server.py
 RUN chmod +x /app/start.sh
 
