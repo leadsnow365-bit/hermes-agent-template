@@ -1,6 +1,14 @@
+def write_config_yaml(data: dict[str, str]) -> None:
+    """Write a config.yaml so hermes picks up the model and provider."""
+    import os
+    model = data.get("LLM_MODEL", "")
+    provider = data.get("HERMES_INFERENCE_PROVIDER", os.environ.get("HERMES_INFERENCE_PROVIDER", "auto"))
+    config_path = Path(HERMES_HOME) / "config.yaml"
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(f"""\
 model:
-  default: "kimi-k2.6"
-  provider: "kimi-coding"
+  default: "{model}"
+  provider: "{provider}"
 
 auxiliary:
   vision:
@@ -8,4 +16,13 @@ auxiliary:
     model: "kimi-k2.5"
     timeout: 120
 
-data_dir: "/data/.hermes"
+terminal:
+  backend: "local"
+  timeout: 60
+  cwd: "/tmp"
+
+agent:
+  max_iterations: 50
+
+data_dir: "{HERMES_HOME}"
+""")
