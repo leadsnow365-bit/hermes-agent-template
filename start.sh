@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 set -e
 
 # Mirror dashboard-ref-only's startup: create every directory hermes expects
@@ -10,8 +10,8 @@ mkdir -p /data/.hermes/cron /data/.hermes/sessions /data/.hermes/logs \
          /data/.hermes/hooks /data/.hermes/image_cache /data/.hermes/audio_cache \
          /data/.hermes/workspace
 
-# ALWAYS copy repo-baked config.yaml (Railway volume may persist stale config)
-if [ -f /app/config.yaml ]; then
+# Use repo-baked config.yaml if it exists; otherwise fall back to the default example
+if [ ! -f /data/.hermes/config.yaml ] && [ -f /app/config.yaml ]; then
   cp /app/config.yaml /data/.hermes/config.yaml
 elif [ ! -f /data/.hermes/config.yaml ] && [ -f /opt/hermes-agent/cli-config.yaml.example ]; then
   cp /opt/hermes-agent/cli-config.yaml.example /data/.hermes/config.yaml
