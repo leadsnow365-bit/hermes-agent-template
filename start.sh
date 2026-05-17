@@ -1,7 +1,10 @@
 #!/bin/bash
 set -e
 
-mkdir -p /data/.hermes/{cron,sessions,logs,memories,skills,pairing,hooks,image_cache,audio_cache,workspace}
+mkdir -p /data/.hermes/cron /data/.hermes/sessions /data/.hermes/logs \
+         /data/.hermes/memories /data/.hermes/skills /data/.hermes/pairing \
+         /data/.hermes/hooks /data/.hermes/image_cache /data/.hermes/audio_cache \
+         /data/.hermes/workspace
 
 cat > /data/.hermes/config.yaml << 'EOF'
 model:
@@ -32,5 +35,31 @@ source /opt/hermes-agent/.venv/bin/activate 2>/dev/null || true
 if [ -n "$AGENT_NAME" ]; then
     python /app/mcp_task_server.py &
 fi
+
+# Background task: rewrite config after server.py overwrites it
+(
+    sleep 8
+    cat > /data/.hermes/config.yaml << 'EOF'
+model:
+  default: "kimi-k2.6"
+  provider: "kimi-coding"
+
+auxiliary:
+  vision:
+    provider: "main"
+    model: "kimi-k2.5"
+    timeout: 120
+
+terminal:
+  backend: "local"
+  timeout: 60
+  cwd: "/tmp"
+
+agent:
+  max_iterations: 50
+
+data_dir: "/data/.hermes"
+EOF
+) &
 
 exec python /app/server.py
