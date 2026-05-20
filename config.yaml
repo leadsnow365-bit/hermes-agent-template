@@ -1,19 +1,28 @@
+from pathlib import Path
+import os
+
 def write_config_yaml(data: dict[str, str]) -> None:
-    """Write a config.yaml so hermes picks up the model and provider."""
-    import os
-    model = data.get("LLM_MODEL", "")
-    provider = data.get("HERMES_INFERENCE_PROVIDER", os.environ.get("HERMES_INFERENCE_PROVIDER", "auto"))
+    """Write Hermes config.yaml"""
+
+    model = data.get("LLM_MODEL", "qwen3:latest")
+
+    provider = data.get(
+        "HERMES_INFERENCE_PROVIDER",
+        os.environ.get("HERMES_INFERENCE_PROVIDER", "ollama")
+    )
+
     config_path = Path(HERMES_HOME) / "config.yaml"
     config_path.parent.mkdir(parents=True, exist_ok=True)
-    config_path.write_text(f"""\
+
+    config_path.write_text(f"""
 model:
   default: "{model}"
   provider: "{provider}"
 
 auxiliary:
   vision:
-    provider: "main"
-    model: "kimi-k2.5"
+    provider: "ollama"
+    model: "{model}"
     timeout: 120
 
 terminal:
