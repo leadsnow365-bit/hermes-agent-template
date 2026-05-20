@@ -1,5 +1,8 @@
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
+# Clear stale apt metadata to avoid GPG signature errors from cached base image layers.
+RUN rm -rf /var/lib/apt/lists/* && apt-get clean
+
 # Node.js is required only at build time to compile the Hermes React dashboard.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates git && \
@@ -34,8 +37,6 @@ RUN python -m playwright install chromium && \
 
 COPY requirements.txt /app/requirements.txt
 RUN uv pip install --system --no-cache -r /app/requirements.txt
-
-RUN
 
 COPY server.py /app/server.py
 COPY templates/ /app/templates/
