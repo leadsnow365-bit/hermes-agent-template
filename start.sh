@@ -14,18 +14,22 @@ mkdir -p /data/.hermes/cron \
 
 cat > /data/.hermes/config.yaml << EOF
 model:
-  default: "${LLM_MODEL:-qwen3:latest}"
-  provider: "custom"
+  default: "groq/llama-3.3-70b-versatile"
 
 providers:
-  custom:
-    base_url: "${OLLAMA_BASE_URL:-https://ollama.com/api}"
-    api_key: "${OLLAMA_API_KEY}"
+  groq:
+    api_key: "${GROQ_API_KEY}"
+    base_url: "https://api.groq.com/openai/v1"
+  kimi-coding:
+    api_key: "${KIMI_API_KEY}"
+    base_url: "https://api.moonshot.cn/v1"
+  openai:
+    api_key: "${OPENAI_API_KEY}"
 
 auxiliary:
   vision:
-    provider: "custom"
-    model: "${LLM_MODEL:-qwen3:latest}"
+    provider: "main"
+    model: "kimi-k2.5"
     timeout: 120
 
 terminal:
