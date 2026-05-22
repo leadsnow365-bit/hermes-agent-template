@@ -1,35 +1,28 @@
-#!/bin/bash
-set -e
+from pathlib import Path
+import os
 
-mkdir -p /data/.hermes/cron \
-         /data/.hermes/sessions \
-         /data/.hermes/logs \
-         /data/.hermes/memories \
-         /data/.hermes/skills \
-         /data/.hermes/pairing \
-         /data/.hermes/hooks \
-         /data/.hermes/image_cache \
-         /data/.hermes/audio_cache \
-         /data/.hermes/workspace
+def write_config_yaml(data: dict[str, str]) -> None:
+    """Write Hermes config.yaml"""
 
-cat > /data/.hermes/config.yaml << EOF
+    model = data.get("LLM_MODEL", "qwen3:latest")
+
+    provider = data.get(
+        "HERMES_INFERENCE_PROVIDER",
+        os.environ.get("HERMES_INFERENCE_PROVIDER", "ollama")
+    )
+
+    config_path = Path(HERMES_HOME) / "config.yaml"
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+
+    config_path.write_text(f"""
 model:
-  default: "groq/llama-3.3-70b-versatile"
-
-providers:
-  groq:
-    api_key: "${GROQ_API_KEY}"
-    base_url: "https://api.groq.com/openai/v1"
-  kimi-coding:
-    api_key: "${KIMI_API_KEY}"
-    base_url: "https://api.moonshot.cn/v1"
-  openai:
-    api_key: "${OPENAI_API_KEY}"
+  default: "{model}"
+  provider: "{provider}"
 
 auxiliary:
   vision:
-    provider: "main"
-    model: "kimi-k2.5"
+    provider: "ollama"
+    model: "{model}"
     timeout: 120
 
 terminal:
@@ -40,15 +33,5 @@ terminal:
 agent:
   max_iterations: 50
 
-data_dir: "/data/.hermes"
-EOF
-
-[ ! -f /data/.hermes/.env ] && touch /data/.hermes/.env
-
-source /opt/hermes-agent/.venv/bin/activate 2>/dev/null || true
-
-if [ -n "$AGENT_NAME" ]; then
-    python /app/mcp_task_server.py &
-fi
-
-exec python /app/server.py
+data_dir: "{HERMES_HOME}"
+""")
