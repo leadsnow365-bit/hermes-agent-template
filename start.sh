@@ -1,5 +1,7 @@
- #!/bin/bash
+#!/bin/bash
 set -e
+
+echo "Starting Hermes Agent..."
 
 mkdir -p /data/.hermes/cron \
          /data/.hermes/sessions \
@@ -12,10 +14,15 @@ mkdir -p /data/.hermes/cron \
          /data/.hermes/audio_cache \
          /data/.hermes/workspace
 
+# CLEAN OLD BROKEN CONFIGS
+rm -f /data/.hermes/.env
+rm -f /data/.hermes/config.yaml
+
+# WRITE CLEAN CONFIG
 cat > /data/.hermes/config.yaml << EOF
 model:
   default: "llama-3.3-70b-versatile"
-  provider: "groq"
+  provider: groq
 
 providers:
   groq:
@@ -46,12 +53,14 @@ agent:
 data_dir: "/data/.hermes"
 EOF
 
-[ ! -f /data/.hermes/.env ] && touch /data/.hermes/.env
+echo "Config written successfully"
 
 source /opt/hermes-agent/.venv/bin/activate 2>/dev/null || true
 
 if [ -n "$AGENT_NAME" ]; then
+    echo "Starting MCP task server..."
     python /app/mcp_task_server.py &
 fi
 
-exec python /app/server.py
+echo "Launching Hermes server..."
+exec python /app/server.py 
