@@ -14,11 +14,11 @@ mkdir -p /data/.hermes/cron \
          /data/.hermes/audio_cache \
          /data/.hermes/workspace
 
-# CLEAN OLD BROKEN CONFIGS
+# Clean old configs
 rm -f /data/.hermes/.env
 rm -f /data/.hermes/config.yaml
 
-# WRITE CLEAN CONFIG
+# Write fresh config.yaml
 cat > /data/.hermes/config.yaml << EOF
 model:
   default: "llama-3.3-70b-versatile"
@@ -32,9 +32,6 @@ providers:
   kimi-coding:
     api_key: "${KIMI_API_KEY}"
     base_url: "https://api.moonshot.cn/v1"
-
-  openai:
-    api_key: "${OPENAI_API_KEY}"
 
 auxiliary:
   vision:
@@ -53,14 +50,15 @@ agent:
 data_dir: "/data/.hermes"
 EOF
 
-echo "Config written successfully"
+echo "Config written"
 
 source /opt/hermes-agent/.venv/bin/activate 2>/dev/null || true
 
-if [ -n "$AGENT_NAME" ]; then
-    echo "Starting MCP task server..."
-    python /app/mcp_task_server.py &
-fi
+# MCP disabled temporarily for debugging
+# python /app/mcp_task_server.py &
 
-echo "Launching Hermes server..."
-exec python /app/server.py 
+echo "Waiting before startup..."
+sleep 15
+
+echo "Launching Hermes..."
+exec python /app/server.py
